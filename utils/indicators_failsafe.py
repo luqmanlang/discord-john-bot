@@ -1,2 +1,1 @@
-# indicators_failsafe.py content
-print('This is failsafe version')
+# fallback indicators logic here
