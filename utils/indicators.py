@@ -21,7 +21,7 @@ def stochastic(closes, period=14):
     if len(closes) < period: return None, None
     low, high = min(closes[-period:]), max(closes[-period:])
     k = ((closes[-1] - low) / (high - low)) * 100 if high != low else 0
-    d = sum([((closes[i] - low) / (high - low)) * 100 for i in range(-3, 0)]) / 3
+    d = sum([((closes[-1] - low) / (high - low)) * 100 for i in range(1, 4)]) / 3
     return round(k, 2), round(d, 2)
 
 def get_full_analysis(interval):
@@ -30,6 +30,6 @@ def get_full_analysis(interval):
         return f"⚠️ Gagal ambil data {interval}"
     rsi_val = rsi(closes)
     k, d = stochastic(closes)
-    rsi_msg = f"RSI ({interval.upper()}): {rsi_val} 🔺" if rsi_val < 30 or rsi_val > 70 else f"RSI ({interval.upper()}): {rsi_val}"
+    rsi_msg = f"RSI ({interval.upper()}): {rsi_val} 🔻" if rsi_val < 30 or rsi_val > 70 else f"RSI ({interval.upper()}): {rsi_val}"
     stoch_msg = f"Stoch K/D: {k}/{d} ⚠️" if k > d else f"Stoch K/D: {k}/{d}"
-    return f"📊 [{interval.upper()}] {rsi_msg} | {stoch_msg}"
+    return f"| {interval.upper()} | {rsi_msg} | {stoch_msg}"
