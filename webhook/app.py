@@ -1,8 +1,16 @@
-from flask import Flask
-from webhook.tv_webhook_realtime import app as tv_app
+from flask import Flask, request, jsonify
+import os
+from datetime import datetime
 
-# This reuses the tv_webhook Flask app
-app = tv_app
+app = Flask(__name__)
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    data = request.json
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"🔔 Alert diterima {now}: {data}")
+    return jsonify({"status": "received", "data": data})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
