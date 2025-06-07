@@ -14,7 +14,7 @@ bot = commands.Bot(command_prefix=BOT_PREFIX, intents=intents)
 
 @bot.event
 async def on_ready():
-    print(f"🤖 Bot aktif sebagai {bot.user.name}")
+    print(f"✅ Bot aktif sebagai {bot.user.name}")
     channel = bot.get_channel(DISCORD_CHANNEL_ID)
     if channel:
         await channel.send("🤖 AI John & Alpha Pro aktif di Discord!")
@@ -35,22 +35,22 @@ async def analisis(ctx):
 
 @tasks.loop(hours=1)
 async def hourly_alert():
-    print("⏰ 1H Alert Triggered")
+    print("⏱ 1H Alert Triggered")
 
 @tasks.loop(hours=4)
 async def four_hour_alert():
-    print("⏰ 4H Alert Triggered")
+    print("⏱ 4H Alert Triggered")
 
 @tasks.loop(hours=24)
 async def daily_analysis():
-    print("📅 Daily Analysis Triggered")
+    print("📊 Daily Analysis Triggered")
 
 @tasks.loop(hours=24*7)
 async def weekly_analysis():
-    print("📆 Weekly Analysis Triggered")
+    print("📈 Weekly Analysis Triggered")
 
 @tasks.loop(hours=24*30)
 async def monthly_analysis():
-    print("🗓️ Monthly Analysis Triggered")
+    print("📅 Monthly Analysis Triggered")
 
 bot.run(DISCORD_TOKEN)
