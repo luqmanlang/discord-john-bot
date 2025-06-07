@@ -1,4 +1,3 @@
-
 import os
 import discord
 from discord.ext import commands, tasks
@@ -15,16 +14,15 @@ bot = commands.Bot(command_prefix=BOT_PREFIX, intents=intents)
 
 @bot.event
 async def on_ready():
-    print(f"✅ Bot aktif sebagai {bot.user.name}")
+    print(f"🤖 Bot aktif sebagai {bot.user.name}")
     channel = bot.get_channel(DISCORD_CHANNEL_ID)
     if channel:
         await channel.send("🤖 AI John & Alpha Pro aktif di Discord!")
-
-    hourly_alert.start()
-    four_hour_alert.start()
-    daily_analysis.start()
-    weekly_analysis.start()
-    monthly_analysis.start()
+        hourly_alert.start()
+        four_hour_alert.start()
+        daily_analysis.start()
+        weekly_analysis.start()
+        monthly_analysis.start()
 
 @bot.command()
 async def ping(ctx):
@@ -32,7 +30,7 @@ async def ping(ctx):
 
 @bot.command()
 async def analisis(ctx):
-    report = get_full_analysis()
+    report = get_full_analysis("1h")
     await ctx.send(report)
 
 @tasks.loop(hours=1)
@@ -45,14 +43,14 @@ async def four_hour_alert():
 
 @tasks.loop(hours=24)
 async def daily_analysis():
-    print("📊 Daily Analysis Triggered")
+    print("📅 Daily Analysis Triggered")
 
 @tasks.loop(hours=24*7)
 async def weekly_analysis():
-    print("📈 Weekly Analysis Triggered")
+    print("📆 Weekly Analysis Triggered")
 
 @tasks.loop(hours=24*30)
 async def monthly_analysis():
-    print("📅 Monthly Analysis Triggered")
+    print("🗓️ Monthly Analysis Triggered")
 
 bot.run(DISCORD_TOKEN)
