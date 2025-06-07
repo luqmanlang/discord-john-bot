@@ -1,1 +1,1 @@
-# This file marks the utils folder as a Python package.
+# This file makes 'utils' a Python package.
