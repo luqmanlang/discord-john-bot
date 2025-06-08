@@ -2,4 +2,3 @@ discord.py
 requests
 aiohttp
 numpy
-python-dotenv
