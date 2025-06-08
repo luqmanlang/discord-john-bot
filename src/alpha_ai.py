@@ -1,23 +1,27 @@
 from utils.data_utils import get_ohlc_data
 from utils.indicators import calculate_rsi, calculate_stochastic
 
-def alpha_analysis():
-    analysis = []
+def counter_analysis():
+    try:
+        df = get_ohlc_data(symbol="BTCUSDT", interval="1h", limit=100)
+        if df is None:
+            return "❌ Gagal ambil data harga dari Binance."
 
-    for tf in ["1h", "4h"]:
-        try:
-            data = get_price_data("bitcoin", tf)
+        rsi = calculate_rsi(df)['close']
+        k, d = calculate_stochastic(df)
 
-            if not data or len(data) < 10:
-                analysis.append(f"❌ Data tidak mencukupi untuk {tf.upper()}")
-                continue
+        rsi_val = round(rsi.iloc[-1], 2)
+        k_val = round(k.iloc[-1], 2)
+        d_val = round(d.iloc[-1], 2)
 
-            closes = [candle['close'] for candle in data]
-            rsi = calculate_rsi(closes, period=5)
+        insight = "🤖 **AlphaAI Counter View**\n"
+        insight += f"• RSI(5): {rsi_val}\n"
+        insight += f"• Stochastic %K: {k_val}, %D: {d_val}\n"
 
-            stoch_k, stoch_d = calculate_stochastic(data, k_period=5, d_period=3, smooth_k=3)
+        if rsi_val > 70:
+            insight += "⚠️ RSI terlalu tinggi — potensi overbought.\n"
+        elif rsi_val < 30:
+            insight += "⚠️ RSI terlalu rendah — potensi oversold.\n"
 
-            signal = "❓ Neutral"
-            if rsi < 30 and stoch_k < 20 and stoch_k > stoch_d:
-                signal = "⚠️ Berpotensi Rebound (Oversold)"
-            elif rsi > 70 and stoch_k > 80 and stoch_k
+        if k_val < d_val:
+            insight += "📉
