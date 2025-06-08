@@ -21,11 +21,22 @@ async def on_ready():
 @tasks.loop(minutes=60)
 async def send_analysis():
     channel = bot.get_channel(CHANNEL_ID)
-    if channel:
+    if not channel:
+        print("❌ Gagal jumpa channel. Semak CHANNEL_ID dan pastikan bot telah join server.")
+        return
+
+    try:
         john_msg = generate_analysis()
         alpha_msg = counter_analysis()
 
+        if not john_msg or not alpha_msg:
+            await channel.send("❌ Gagal jana analisis. Data mungkin tidak lengkap.")
+            return
+
         full_msg = f"📈 **Analisis Bitcoin Terkini**\n\n{john_msg}\n\n{alpha_msg}"
         await channel.send(full_msg)
+
+    except Exception as e:
+        await channel.send(f"⚠️ Error dalam `send_analysis`: {str(e)}")
 
 bot.run(TOKEN)
