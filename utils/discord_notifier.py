@@ -1,24 +1,15 @@
-
-import discord
+import requests
 import os
-import asyncio
 
-TOKEN = os.getenv("DISCORD_BOT_TOKEN")
-CHANNEL_ID = int(os.getenv("DISCORD_CHANNEL_ID"))
+DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
 
-client = discord.Client(intents=discord.Intents.default())
+def send_discord_message(message):
+    if not DISCORD_WEBHOOK_URL:
+        print("Webhook tidak dijumpai.")
+        return
 
-async def send_discord_alert(message):
-    await client.wait_until_ready()
-    channel = client.get_channel(CHANNEL_ID)
-    if channel:
-        await channel.send(f"📈 Alert: {message}")
-    else:
-        print("⚠️ Channel not found")
-
-@client.event
-async def on_ready():
-    print(f"Bot is ready: {client.user}")
-
-def start_bot():
-    client.run(TOKEN)
+    data = {"content": message}
+    try:
+        requests.post(DISCORD_WEBHOOK_URL, json=data)
+    except Exception as e:
+        print(f"Gagal hantar mesej: {e}")
