@@ -2,12 +2,9 @@ import os
 import requests
 
 def send_discord_alert(message):
-    webhook_url = os.getenv("DISCORD_WEBHOOK")
-    if not webhook_url:
-        print("❌ DISCORD_WEBHOOK not set.")
-        return
-    data = {"content": message}
-    try:
-        requests.post(webhook_url, json=data)
-    except Exception as e:
-        print("Error sending to Discord:", e)
+    token = os.getenv("DISCORD_BOT_TOKEN")
+    channel_id = os.getenv("DISCORD_CHANNEL_ID")
+    url = f"https://discord.com/api/v9/channels/{channel_id}/messages"
+    headers = {"Authorization": f"Bot {token}", "Content-Type": "application/json"}
+    payload = {"content": message}
+    requests.post(url, json=payload, headers=headers)

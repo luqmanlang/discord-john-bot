@@ -1,7 +1,2 @@
-def get_rsi_stochastic():
-    # Simulasi data RSI dan Stochastic
-    return {
-        "price": "100,200",
-        "rsi": 48.5,
-        "stochastic": 52.1
-    }
+def calculate_rsi_stochastic():
+    return "RSI(5,3,3): 48.2 | Stochastic(5): 62.5"
