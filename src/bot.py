@@ -13,13 +13,11 @@ async def on_ready():
     print(f"✅ Bot sudah online sebagai {bot.user}")
 
 @bot.command()
-async def john(ctx):
-    report = john_analysis()
-    await ctx.send(report)
-
-@bot.command()
-async def alpha(ctx):
-    report = alpha_analysis()
-    await ctx.send(report)
+async def analisis(ctx):
+    from brain.john_ai import generate_analysis
+    from brain.alpha_ai import counter_analysis
+    john_msg = generate_analysis()
+    alpha_msg = counter_analysis()
+    await ctx.send(f"📊 **Analisis Bitcoin Terkini**\n\n{john_msg}\n{alpha_msg}")
 
 bot.run(os.getenv("DISCORD_BOT_TOKEN"))
