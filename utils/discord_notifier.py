@@ -1,8 +1,20 @@
 import os
 import requests
 
-def send_to_discord(message):
-    webhook_url = os.getenv("DISCORD_WEBHOOK_URL")
-    if webhook_url:
-        data = {"content": message}
-        requests.post(webhook_url, json=data)
+DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
+DISCORD_CHANNEL_ID = os.getenv("DISCORD_CHANNEL_ID")
+
+def send_alert(message):
+    if not DISCORD_TOKEN or not DISCORD_CHANNEL_ID:
+        print("⚠️ Discord credentials not set.")
+        return
+    url = f"https://discord.com/api/v10/channels/{DISCORD_CHANNEL_ID}/messages"
+    headers = {
+        "Authorization": f"Bot {DISCORD_TOKEN}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "content": message
+    }
+    response = requests.post(url, json=payload, headers=headers)
+    print("📤 Alert sent:", response.status_code, response.text)
