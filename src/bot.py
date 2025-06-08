@@ -3,8 +3,8 @@ import discord
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
-from src.brain.john_ai import generate_analysis
-from src.brain.alpha_ai import counter_analysis
+from brain.john_ai import generate_analysis
+from brain.alpha_ai import counter_analysis
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_BOT_TOKEN")
