@@ -1,4 +1,4 @@
-from utils.data_utils import get_price_data
+from utils.data_utils import get_ohlc_data
 from utils.indicators import calculate_rsi, calculate_stochastic
 
 def counter_analysis():
