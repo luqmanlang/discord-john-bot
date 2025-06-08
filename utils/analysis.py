@@ -1,55 +1,51 @@
-import numpy as np
-from utils.discord_notifier import send_alert
-from utils.api_cycle import fetch_price_data
 
-def calculate_rsi(prices, period=5, smooth=3):
-    deltas = np.diff(prices)
-    seed = deltas[:period]
-    up = seed[seed > 0].sum() / period
-    down = -seed[seed < 0].sum() / period
+import requests
+import numpy as np
+
+def fetch_price_data():
+    url = "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart"
+    params = {"vs_currency": "usd", "days": "2", "interval": "hourly"}
+    response = requests.get(url, params=params)
+    data = response.json()
+    prices = [price[1] for price in data["prices"]]
+    return prices
+
+def calculate_rsi(data, period=5):
+    deltas = np.diff(data)
+    seed = deltas[:period+1]
+    up = seed[seed >= 0].sum()/period
+    down = -seed[seed < 0].sum()/period
     rs = up / down if down != 0 else 0
-    rsi = np.zeros_like(prices)
+    rsi = np.zeros_like(data)
     rsi[:period] = 100. - 100. / (1. + rs)
 
-    for i in range(period, len(prices)):
+    for i in range(period, len(data)):
         delta = deltas[i - 1]
-        upval = max(delta, 0)
-        downval = -min(delta, 0)
-        up = (up * (smooth - 1) + upval) / smooth
-        down = (down * (smooth - 1) + downval) / smooth
+        gain = max(delta, 0)
+        loss = -min(delta, 0)
+        up = (up * (period - 1) + gain) / period
+        down = (down * (period - 1) + loss) / period
         rs = up / down if down != 0 else 0
         rsi[i] = 100. - 100. / (1. + rs)
-
     return rsi
 
-def calculate_stochastic(prices, k_period=5, d_period=3):
-    k_values = []
-    for i in range(len(prices)):
-        if i < k_period:
-            k_values.append(0)
-            continue
-        low_min = min(prices[i - k_period:i])
-        high_max = max(prices[i - k_period:i])
-        k = 100 * ((prices[i] - low_min) / (high_max - low_min)) if high_max != low_min else 0
-        k_values.append(k)
-    d_values = np.convolve(k_values, np.ones(d_period) / d_period, mode='same')
-    return k_values, d_values
+def calculate_stochastic(data, k_period=5, d_period=3):
+    stoch_k = []
+    for i in range(k_period, len(data)):
+        low = min(data[i-k_period:i])
+        high = max(data[i-k_period:i])
+        if high - low == 0:
+            stoch_k.append(0)
+        else:
+            stoch_k.append((data[i] - low) / (high - low) * 100)
+    stoch_d = np.convolve(stoch_k, np.ones(d_period)/d_period, mode='valid')
+    return stoch_k[-1], stoch_d[-1]
 
-def run_analysis():
-    price_data = fetch_price_data()
-    if not price_data or len(price_data) < 10:
-        return
-
-    rsi = calculate_rsi(price_data)
-    k, d = calculate_stochastic(price_data)
-
-    current_price = price_data[-1]
-    rsi_value = round(rsi[-1], 2)
-    k_value = round(k[-1], 2)
-    d_value = round(d[-1], 2)
-
+def run_analysis(timeframe):
+    prices = fetch_price_data()
+    rsi = calculate_rsi(prices)[-1]
+    k, d = calculate_stochastic(prices)
     message = f"📊 1H/4H Analysis:
-Price: ${current_price}
-RSI(5,3,3): {rsi_value}
-Stochastic(5): K={k_value}, D={d_value}"
-    send_alert(message)
+RSI: {rsi:.2f}
+Stochastic K: {k:.2f}, D: {d:.2f}"
+    print(message)
