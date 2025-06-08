@@ -1,3 +1,4 @@
+
 import schedule
 import time
 from utils.analysis import run_analysis
@@ -8,11 +9,10 @@ def job_1h():
 def job_4h():
     run_analysis("4h")
 
-# Jadual tugas
-schedule.every().hour.at(":00").do(job_1h)      # setiap jam
-schedule.every(4).hours.at(":00").do(job_4h)     # setiap 4 jam
+schedule.every().hour.at(":00").do(job_1h)
+schedule.every(4).hours.at(":00").do(job_4h)
 
-print("Bot indikator Bitcoin telah bermula... ⏳")
+print("📡 Bot JohnAI sedang berjalan...")
 
 while True:
     schedule.run_pending()
