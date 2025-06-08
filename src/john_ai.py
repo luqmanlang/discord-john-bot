@@ -1,5 +1,5 @@
 from utils.indicators import calculate_rsi, calculate_stochastic
-from utils.data import get_price_data
+from utils.data_utils import get_price_data
 
 def generate_john_report():
     try:
