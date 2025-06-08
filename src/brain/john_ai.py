@@ -1,11 +1,8 @@
-from utils.indicators import calculate_rsi, calculate_stochastic
 from utils.data_utils import get_ohlc_data
+from utils.indicators import calculate_rsi, calculate_stochastic
 
 def generate_analysis():
     df = get_ohlc_data(symbol="BTCUSDT", interval="1h", limit=100)
-    if df is None:
-        return "❌ Gagal ambil data harga dari Binance."
-
     rsi = calculate_rsi(df)
     k, d = calculate_stochastic(df)
 
@@ -13,7 +10,7 @@ def generate_analysis():
     current_k = round(k.iloc[-1], 2)
     current_d = round(d.iloc[-1], 2)
 
-    advice = "📊 AI John Analysis:\n"
+    advice = "\U0001F4CA AI John Analysis:\n"
     advice += f"• RSI(5): {current_rsi}\n"
     advice += f"• Stochastic %K: {current_k}, %D: {current_d}\n"
 
