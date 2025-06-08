@@ -1,11 +1,7 @@
-from utils.analysis import get_indicators
-from utils.discord_notifier import send_to_discord
 import time
-
-def main():
-    indicators = get_indicators()
-    message = f"🔔 RSI: {indicators['rsi']}, %K: {indicators['stoch_k']}, %D: {indicators['stoch_d']}"
-    send_to_discord(message)
+from utils.analysis import run_analysis
 
 if __name__ == "__main__":
-    main()
+    while True:
+        run_analysis()
+        time.sleep(3600)

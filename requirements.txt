@@ -1,2 +1,5 @@
+discord.py
 requests
-pandas
+aiohttp
+numpy
+python-dotenv
