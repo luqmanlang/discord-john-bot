@@ -1,14 +1,14 @@
-import asyncio
-import aiohttp
+import numpy as np
 
-async def fetch_price(session, url):
-    async with session.get(url) as response:
-        return await response.json()
+def calculate_rsi(closes, period=5):
+    deltas = np.diff(closes)
+    seed = deltas[:period]
+    up = seed[seed >= 0].sum() / period
+    down = -seed[seed < 0].sum() / period
+    rs = up / down if down != 0 else 0
+    return 100. - 100. / (1. + rs)
 
-async def start_data_cycle():
-    url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
-    async with aiohttp.ClientSession() as session:
-        while True:
-            data = await fetch_price(session, url)
-            print("📊 Harga BTC:", data.get("bitcoin", {}).get("usd", "N/A"))
-            await asyncio.sleep(3600)  # Tukar selang masa jika mahu
+def calculate_stochastic(closes, k=5):
+    highest_high = max(closes[-k:])
+    lowest_low = min(closes[-k:])
+    return ((closes[-1] - lowest_low) / (highest_high - lowest_low)) * 100 if highest_high != lowest_low else 0
