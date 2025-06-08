@@ -1,6 +1,3 @@
 
-def check_rsi_stochastic_signals():
-    # Dummy logic to simulate signal
-    import random
-    signal = random.choice([None, "RSI Oversold", "Stochastic Crossover", "Buy Signal", None])
-    return signal
+def get_full_analysis(interval="1h"):
+    return f"🔁 Simulasi data untuk {interval.upper()}"
