@@ -1,14 +1,13 @@
 import os
 import requests
 
-DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK")
-
-def send_alert(message):
-    if not DISCORD_WEBHOOK:
-        print("⚠️ Webhook tidak diset. Alert tidak dihantar.")
+def send_discord_alert(message):
+    webhook_url = os.getenv("DISCORD_WEBHOOK")
+    if not webhook_url:
+        print("❌ DISCORD_WEBHOOK not set.")
         return
     data = {"content": message}
     try:
-        requests.post(DISCORD_WEBHOOK, json=data)
+        requests.post(webhook_url, json=data)
     except Exception as e:
-        print(f"Gagal hantar alert: {e}")
+        print("Error sending to Discord:", e)
