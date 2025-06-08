@@ -3,9 +3,6 @@ from utils.indicators import calculate_rsi, calculate_stochastic
 
 def counter_analysis():
     df = get_ohlc_data(symbol="BTCUSDT", interval="1h", limit=100)
-    if df is None:
-        return "❌ Gagal ambil data dari Binance."
-
     rsi = calculate_rsi(df)
     k, d = calculate_stochastic(df)
 
