@@ -2,7 +2,6 @@ import requests
 import pandas as pd
 from datetime import datetime
 
-# Senarai API Binance fallback
 BINANCE_APIS = [
     "https://api.binance.com",
     "https://api1.binance.com",
