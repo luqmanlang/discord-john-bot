@@ -1,25 +1,40 @@
 import requests
+import pandas as pd
 from datetime import datetime
 
-def get_price_data(symbol="bitcoin", interval="1h", limit=100):
-    symbol = "BTCUSDT"  # Untuk Binance, override symbol
-    url = f'https://api.binance.com/api/v3/klines?symbol={symbol}&interval={interval}&limit={limit}'
-    response = requests.get(url)
+# Senarai API Binance fallback
+BINANCE_APIS = [
+    "https://api.binance.com",
+    "https://api1.binance.com",
+    "https://api2.binance.com"
+]
 
-    if response.status_code != 200:
-        return None
+def get_ohlc_data(symbol="BTCUSDT", interval="1h", limit=100):
+    for base_url in BINANCE_APIS:
+        try:
+            url = f"{base_url}/api/v3/klines?symbol={symbol}&interval={interval}&limit={limit}"
+            response = requests.get(url, timeout=5)
 
-    raw_data = response.json()
-    result = []
+            if response.status_code == 200:
+                data = response.json()
 
-    for candle in raw_data:
-        result.append({
-            "timestamp": datetime.fromtimestamp(candle[0] / 1000),
-            "open": float(candle[1]),
-            "high": float(candle[2]),
-            "low": float(candle[3]),
-            "close": float(candle[4]),
-            "volume": float(candle[5])
-        })
+                df = pd.DataFrame(data, columns=[
+                    'timestamp', 'open', 'high', 'low', 'close', 'volume',
+                    'close_time', 'quote_asset_volume', 'number_of_trades',
+                    'taker_buy_base_asset_volume', 'taker_buy_quote_asset_volume', 'ignore'
+                ])
 
-    return result
+                df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
+                df.set_index('timestamp', inplace=True)
+
+                df[['open', 'high', 'low', 'close', 'volume']] = df[['open', 'high', 'low', 'close', 'volume']].astype(float)
+                return df
+
+            else:
+                print(f"❌ API gagal dari {base_url} — Status Code: {response.status_code}")
+
+        except Exception as e:
+            print(f"⚠️ Tidak dapat akses {base_url}: {str(e)}")
+
+    print("❌ Semua endpoint Binance gagal. Data tidak berjaya diambil.")
+    return None
