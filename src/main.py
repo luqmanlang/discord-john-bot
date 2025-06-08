@@ -1,5 +1,6 @@
 import sys
 import os
+import utils.discord_bot
 
 # Tambah path ke folder atas supaya boleh import dari utils
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
